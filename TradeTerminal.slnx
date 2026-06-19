@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="TradeTerminal.Application/TradeTerminal.Application.csproj" />
+  <Project Path="TradeTerminal.DataAccess/TradeTerminal.DataAccess.csproj" />
+  <Project Path="TradeTerminal.Desktop/TradeTerminal.Desktop.csproj" />
+  <Project Path="TradeTerminal.Domain/TradeTerminal.Domain.csproj" />
+  <Project Path="TradeTerminal.Web/TradeTerminal.Web.csproj" Id="7214452f-911d-4619-a6f6-bcf5d2107f41" />
+  <Project Path="TradeTerminal.WebApi/TradeTerminal.WebApi.csproj" />
+</Solution>

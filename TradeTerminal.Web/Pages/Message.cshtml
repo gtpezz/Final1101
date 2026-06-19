@@ -1,0 +1,17 @@
+﻿@page
+@model MessageModel
+@{
+    ViewData["Title"] = "Товар добавлен";
+}
+
+<div class="message-container">
+    <div class="message-icon">✅</div>
+    <h1 class="message-title">Товар добавлен в заказ!</h1>
+
+    <div class="message-details">
+        <p><strong>Название:</strong> @Model.ProductName</p>
+        <p><strong>Цена:</strong> @Model.ProductPrice.ToString("F2") ₽</p>
+    </div>
+
+    <a href="/" class="btn-back">← Вернуться к каталогу</a>
+</div>

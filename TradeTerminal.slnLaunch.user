@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Новый профиль",
+    "Projects": [
+      {
+        "Path": "TradeTerminal.WebApi\\TradeTerminal.WebApi.csproj",
+        "Action": "StartWithoutDebugging"
+      },
+      {
+        "Path": "TradeTerminal.Desktop\\TradeTerminal.Desktop.csproj",
+        "Action": "Start"
+      }
+    ]
+  },
+  {
+    "Name": "Новый профиль (1)",
+    "Projects": [
+      {
+        "Path": "TradeTerminal.WebApi\\TradeTerminal.WebApi.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "TradeTerminal.Web\\TradeTerminal.Web.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "TradeTerminal.Desktop\\TradeTerminal.Desktop.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

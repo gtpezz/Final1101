@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Книжный магазин</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <div class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon"><img src="/images/icon.png" alt="Alternate Text" height="100" width="200" /></span>
+                    <span class="logo-text">Книжный магазин</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        <div class="footer">
+            <p>&copy; 2026 - Терминал торгового центра</p>
+        </div>
+    </footer>
+</body>
+</html>

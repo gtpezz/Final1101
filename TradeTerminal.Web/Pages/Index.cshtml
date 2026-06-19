@@ -1,0 +1,48 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Каталог товаров";
+}
+
+<h1 class="page-title">Каталог товаров </h1>
+
+@if (!Model.Products.Any())
+{
+    <div class="no-products">
+        Товары не найдены
+    </div>
+}
+else
+{
+    <div class="products-list">
+        @foreach (var product in Model.Products)
+        {
+            <div class="product-item">
+                @if (!string.IsNullOrEmpty(product.Photo))
+                {
+                    <img class="product-image" src="/images/@product.Photo" alt="@product.Name" />
+                }
+                else
+                {
+                    <div class="product-image" style="background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:24px; color:#999;">
+                        📖
+                    </div>
+                }
+
+                <div class="product-info">
+                    <div class="product-name">@product.Name</div>
+                    <div class="product-manufacturer">Производитель: @product.ManufacturerName</div>
+                </div>
+
+                <div class="product-price">@product.Price.ToString("F2") ₽</div>
+
+                <form method="post" asp-page="/Order" asp-page-handler="AddItem">
+                    <input type="hidden" name="productId" value="@product.Id" />
+                    <input type="hidden" name="productName" value="@product.Name" />
+                    <input type="hidden" name="productPrice" value="@product.Price" />
+                    <button type="submit" class="btn-order">Заказать</button>
+                </form>
+            </div>
+        }
+    </div>
+}
