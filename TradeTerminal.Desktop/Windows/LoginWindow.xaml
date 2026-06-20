@@ -44,8 +44,8 @@
         <!-- Кнопки -->
         <!-- Внимание: Убедитесь, что стили объявлены в App.xaml, иначе временно удалите Style="..." -->
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Войти" Click="BtnLogin_Click" Style="{StaticResource PrimaryButton}" Width="120" Height="38" Margin="0,0,15,0"/>
-            <Button Content="Отмена" Click="BtnCancel_Click" Style="{StaticResource SecondaryButton}" Width="120" Height="38"/>
+            <Button Content="Войти" Click="LoginButton_Click" Style="{StaticResource PrimaryButton}" Width="120" Height="38" Margin="0,0,15,0"/>
+            <Button Content="Отмена" Click="CancelButton_Click" Style="{StaticResource SecondaryButton}" Width="120" Height="38"/>
         </StackPanel>
     </Grid>
 </Window>

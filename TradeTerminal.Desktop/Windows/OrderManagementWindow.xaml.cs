@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TradeTerminal.Desktop.Windows
 {
@@ -97,7 +86,7 @@ namespace TradeTerminal.Desktop.Windows
                     });
                 }
 
-                lvOrders.ItemsSource = displayList;
+                ordersListView.ItemsSource = displayList;
             }
             catch (Exception ex)
             {
@@ -106,9 +95,9 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        private void LvOrders_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OrdersListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (lvOrders.SelectedItem is OrderDisplay selected)
+            if (ordersListView.SelectedItem is OrderDisplay selected)
             {
                 _selectedOrder = _allOrders.FirstOrDefault(o => o.GetProperty("id").GetInt32() == selected.OrderId);
 
@@ -126,9 +115,10 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        private async void CmbStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void StatusComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (_selectedOrder == null || cmbStatus.SelectedIndex < 0) return;
+            if (_selectedOrder == null || cmbStatus.SelectedIndex < 0)
+                return;
 
             var orderId = _selectedOrder.Value.GetProperty("id").GetInt32();
             var statusId = _statuses[cmbStatus.SelectedIndex].GetProperty("id").GetInt32();
@@ -164,7 +154,7 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        private async void BtnFindOrder_Click(object sender, RoutedEventArgs e)
+        private async void FindOrderButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtOrderNumber.Text))
             {
@@ -209,7 +199,7 @@ namespace TradeTerminal.Desktop.Windows
                 }
             };
 
-                lvOrders.ItemsSource = displayList;
+                ordersListView.ItemsSource = displayList;
                 _allOrders = new List<JsonElement> { order };
             }
             catch (Exception ex)
@@ -219,13 +209,13 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             txtOrderNumber.Text = "";
             await LoadOrdersAsync();
         }
 
-        private async void BtnDeleteOrder_Click(object sender, RoutedEventArgs e)
+        private async void DeleteOrderButton_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedOrder == null)
             {

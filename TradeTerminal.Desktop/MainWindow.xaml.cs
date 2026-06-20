@@ -7,6 +7,8 @@ namespace TradeTerminal.Desktop
 {
     public partial class MainWindow : Window
     {
+        private const string arrowUp = "\u25B2";
+        private const string arrowDown = "\u25BC";
         private readonly ApiService _api = new();
         private readonly OrderState _order = OrderState.Instance;
         private JsonElement _allProducts;
@@ -66,7 +68,7 @@ namespace TradeTerminal.Desktop
 
         #endregion
 
-        #region Filters and Sorting
+        #region Фильтры и сортировка(Filters and Sorting)
 
         private void ApplyFilters()
         {
@@ -111,12 +113,12 @@ namespace TradeTerminal.Desktop
                 displayList.Add(new ProductDisplayItem
                 {
                     Id = item.GetProperty("id").GetInt32(),
-                    Name = item.GetProperty("name").GetString(),
-                    ManufacturerName = item.GetProperty("manufacturerName").GetString(),
+                    Name = item.GetProperty("name").GetString()!,
+                    ManufacturerName = item.GetProperty("manufacturerName").GetString()!,
                     Price = item.GetProperty("price").GetDecimal(),
                     Discount = item.GetProperty("discount").GetDecimal(),
-                    Article = item.GetProperty("article").GetString(),
-                    Photo = photo  // ← Фото из API
+                    Article = item.GetProperty("article").GetString()!,
+                    Photo = photo
                 });
             }
 
@@ -126,7 +128,7 @@ namespace TradeTerminal.Desktop
 
         #endregion
 
-        #region UI Updates
+        #region Обновления пользовательского интерфейса(UI Updates)
 
         private void UpdateUserUI()
         {
@@ -134,7 +136,7 @@ namespace TradeTerminal.Desktop
 
             if (settings.IsAuthenticated)
             {
-                lblUser.Text = $"👤 {settings.CurrentUserFullName}";
+                lblUser.Text = $"\uD83D\uDC64 {settings.CurrentUserFullName}";
                 btnLogin.Content = "Выйти";
                 var role = settings.CurrentUserRole;
                 btnManageOrders.Visibility = (role == "Администратор" || role == "Менеджер")
@@ -142,7 +144,7 @@ namespace TradeTerminal.Desktop
             }
             else
             {
-                lblUser.Text = "👤 Гость";
+                lblUser.Text = "\uD83D\uDC64 Гость";
                 btnLogin.Content = "Войти";
                 btnManageOrders.Visibility = Visibility.Collapsed;
             }
@@ -152,18 +154,18 @@ namespace TradeTerminal.Desktop
         {
             if (_order.HasItems)
             {
-                btnViewOrder.Visibility = Visibility.Visible;
-                btnViewOrder.Content = $"🛒 Заказ №{_order.OrderNumber} ({_order.ItemsCount} шт.) - {_order.TotalAmount:C}";
+                buttonViewOrder.Visibility = Visibility.Visible;
+                buttonViewOrder.Content = $"Заказ №{_order.OrderNumber} ({_order.ItemsCount} шт.) - {_order.TotalAmount:C}";
             }
             else
             {
-                btnViewOrder.Visibility = Visibility.Collapsed;
+                buttonViewOrder.Visibility = Visibility.Collapsed;
             }
         }
 
         #endregion
 
-        #region Event Handlers
+        #region Обработчики событий(Event Handlers)
 
         private async void OrderButton_Click(object sender, RoutedEventArgs e)
         {
@@ -201,7 +203,7 @@ namespace TradeTerminal.Desktop
             }
         }
 
-        private void BtnLogin_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if (Properties.Settings.Default.IsAuthenticated)
             {
@@ -234,16 +236,16 @@ namespace TradeTerminal.Desktop
             }
         }
 
-        private void BtnManageOrders_Click(object sender, RoutedEventArgs e)
+        private void ManageOrdersButton_Click(object sender, RoutedEventArgs e)
         {
-            var win = new OrderManagementWindow();
-            win.ShowDialog();
+            var window = new OrderManagementWindow();
+            window.ShowDialog();
         }
 
-        private void TxtFilter_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilters();
-        private void CmbFilter_SelectionChanged(object sender, SelectionChangedEventArgs e) => ApplyFilters();
+        private void FilterTextBox_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilters();
+        private void FilterComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e) => ApplyFilters();
 
-        private void BtnSortName_Click(object sender, RoutedEventArgs e)
+        private void SortNameButton_Click(object sender, RoutedEventArgs e)
         {
             if (_sortBy == "name") _asc = !_asc;
             else { _sortBy = "name"; _asc = true; }
@@ -251,7 +253,7 @@ namespace TradeTerminal.Desktop
             ApplyFilters();
         }
 
-        private void BtnSortPrice_Click(object sender, RoutedEventArgs e)
+        private void SortPriceButton_Click(object sender, RoutedEventArgs e)
         {
             if (_sortBy == "price") _asc = !_asc;
             else { _sortBy = "price"; _asc = true; }
@@ -259,7 +261,7 @@ namespace TradeTerminal.Desktop
             ApplyFilters();
         }
 
-        private async void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn) btn.IsEnabled = false;
             await LoadDataAsync();
@@ -268,13 +270,13 @@ namespace TradeTerminal.Desktop
 
         private void UpdateSortButtons()
         {
-            btnSortName.Content = $"По имени {(_sortBy == "name" ? (_asc ? "↑" : "↓") : "")}";
-            btnSortPrice.Content = $"По цене {(_sortBy == "price" ? (_asc ? "↑" : "↓") : "")}";
+            buttonSortName.Content = $"По имени {(_sortBy == "name" ? (_asc ? arrowUp : arrowDown) : "")}";
+            btnSortPrice.Content = $"По цене {(_sortBy == "price" ? (_asc ? arrowUp : arrowDown) : "")}";
 
-            btnSortName.Background = _sortBy == "name"
+            buttonSortName.Background = _sortBy == "name"
                 ? (System.Windows.Media.Brush)FindResource("AccentBrush")
                 : System.Windows.Media.Brushes.LightGray;
-            btnSortName.Foreground = _sortBy == "name"
+            buttonSortName.Foreground = _sortBy == "name"
                 ? System.Windows.Media.Brushes.White
                 : System.Windows.Media.Brushes.Black;
 

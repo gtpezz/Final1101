@@ -16,7 +16,7 @@ namespace TradeTerminal.Desktop.Windows
             Owner = Application.Current.MainWindow;
         }
 
-        private async void BtnLogin_Click(object sender, RoutedEventArgs e)
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtLogin.Text) || string.IsNullOrWhiteSpace(txtPassword.Password))
             {
@@ -51,7 +51,7 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
             Close();

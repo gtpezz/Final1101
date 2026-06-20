@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace TradeTerminal.Desktop.Windows
 {
@@ -46,21 +35,17 @@ namespace TradeTerminal.Desktop.Windows
         {
             try
             {
-                // Номер заказа
                 var orderNumber = _orderData.GetProperty("orderNumber").GetInt32();
-                lblOrderNumber.Text = orderNumber.ToString();
+                orderNumberLabel.Text = orderNumber.ToString();
 
-                // Клиент
                 var userFullName = _orderData.TryGetProperty("userFullName", out var userProp)
                     ? userProp.GetString()
                     : null;
                 lblClient.Text = string.IsNullOrEmpty(userFullName) ? "Гость" : userFullName;
 
-                // Код получения
                 var pickupCode = _orderData.GetProperty("pickupCode").GetString();
                 lblPickupCode.Text = pickupCode;
 
-                // Товары
                 _items.Clear();
                 decimal total = 0;
 
@@ -96,10 +81,7 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        /// <summary>
-        /// Сохранить талон в txt (Задание 10)
-        /// </summary>
-        private void BtnSaveTalon_Click(object sender, RoutedEventArgs e)
+        private void SaveTicketButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -107,36 +89,36 @@ namespace TradeTerminal.Desktop.Windows
                 {
                     Filter = "Text files (*.txt)|*.txt",
                     DefaultExt = "txt",
-                    FileName = $"Талон_заказа_{lblOrderNumber.Text}_{DateTime.Now:yyyyMMdd_HHmmss}"
+                    FileName = $"Талон_заказа_{orderNumberLabel.Text}_{DateTime.Now:yyyyMMdd_HHmmss}"
                 };
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
-                    var sb = new StringBuilder();
-                    sb.AppendLine("=".PadRight(50, '='));
-                    sb.AppendLine($"          ТАЛОН ЗАКАЗА №{lblOrderNumber.Text}");
-                    sb.AppendLine("=".PadRight(50, '='));
-                    sb.AppendLine();
-                    sb.AppendLine($"Дата заказа: {DateTime.Now:dd.MM.yyyy HH:mm}");
-                    sb.AppendLine($"Клиент: {lblClient.Text}");
-                    sb.AppendLine($"Код получения: {lblPickupCode.Text}");
-                    sb.AppendLine();
-                    sb.AppendLine("-".PadRight(50, '-'));
-                    sb.AppendLine("Товары:");
+                    var ticketContent = new StringBuilder();
+                    ticketContent.AppendLine("=".PadRight(50, '='));
+                    ticketContent.AppendLine($"          ТАЛОН ЗАКАЗА №{orderNumberLabel.Text}");
+                    ticketContent.AppendLine("=".PadRight(50, '='));
+                    ticketContent.AppendLine();
+                    ticketContent.AppendLine($"Дата заказа: {DateTime.Now:dd.MM.yyyy HH:mm}");
+                    ticketContent.AppendLine($"Клиент: {lblClient.Text}");
+                    ticketContent.AppendLine($"Код получения: {lblPickupCode.Text}");
+                    ticketContent.AppendLine();
+                    ticketContent.AppendLine("-".PadRight(50, '-'));
+                    ticketContent.AppendLine("Товары:");
 
                     foreach (OrderItem item in lvItems.Items)
                     {
-                        sb.AppendLine($"  {item.ProductName}");
-                        sb.AppendLine($"    {item.Quantity} шт. x {item.Price:C} = {item.Total:C}");
+                        ticketContent.AppendLine($"  {item.ProductName}");
+                        ticketContent.AppendLine($"    {item.Quantity} шт. x {item.Price:C} = {item.Total:C}");
                     }
 
-                    sb.AppendLine("-".PadRight(50, '-'));
-                    sb.AppendLine($"ИТОГО: {lblTotal.Text}");
-                    sb.AppendLine("=".PadRight(50, '='));
-                    sb.AppendLine();
-                    sb.AppendLine("Спасибо за покупку!");
+                    ticketContent.AppendLine("-".PadRight(50, '-'));
+                    ticketContent.AppendLine($"ИТОГО: {lblTotal.Text}");
+                    ticketContent.AppendLine("=".PadRight(50, '='));
+                    ticketContent.AppendLine();
+                    ticketContent.AppendLine("Спасибо за покупку!");
 
-                    File.WriteAllText(saveFileDialog.FileName, sb.ToString(), Encoding.UTF8);
+                    File.WriteAllText(saveFileDialog.FileName, ticketContent.ToString(), Encoding.UTF8);
 
                     MessageBox.Show("Талон успешно сохранен!", "Успешно",
                         MessageBoxButton.OK, MessageBoxImage.Information);
@@ -149,10 +131,7 @@ namespace TradeTerminal.Desktop.Windows
             }
         }
 
-        /// <summary>
-        /// Оформить заказ - сохранить в БД (Задание 9)
-        /// </summary>
-        private async void BtnCheckout_Click(object sender, RoutedEventArgs e)
+        private async void CheckoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -164,11 +143,7 @@ namespace TradeTerminal.Desktop.Windows
 
                 if (result == MessageBoxResult.Yes)
                 {
-                    // Заказ уже создан со статусом "Новый"
-                    // Можно обновить статус если нужно
-                    // await _api.UpdateOrderStatusAsync(_order.OrderId, 1);
-
-                    MessageBox.Show($"Заказ №{lblOrderNumber.Text} успешно оформлен!\nКод получения: {lblPickupCode.Text}",
+                    MessageBox.Show($"Заказ №{orderNumberLabel.Text} успешно оформлен!\nКод получения: {lblPickupCode.Text}",
                         "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
 
                     _order.ClearOrder();
@@ -186,7 +161,7 @@ namespace TradeTerminal.Desktop.Windows
         /// <summary>
         /// Очистить корзину
         /// </summary>
-        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
         {
             var result = MessageBox.Show(
                 "Вы уверены, что хотите очистить корзину?",

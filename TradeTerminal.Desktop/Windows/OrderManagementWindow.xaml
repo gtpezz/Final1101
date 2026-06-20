@@ -20,12 +20,12 @@
         <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
             <TextBlock Text="Номер заказа:" VerticalAlignment="Center" Margin="0,0,10,0"/>
             <TextBox x:Name="txtOrderNumber" Width="100" VerticalAlignment="Center"/>
-            <Button Content="Найти" Click="BtnFindOrder_Click" Style="{StaticResource PrimaryButton}" Padding="10,3,10,3" FontSize="12" Margin="10,0,0,0"/>
-            <Button Content="Обновить" Click="BtnRefresh_Click" Style="{StaticResource PrimaryButton}" Padding="10,3,10,3" FontSize="12" Margin="10,0,0,0"/>
+            <Button Content="Найти" Click="FindOrderButton_Click" Style="{StaticResource PrimaryButton}" Padding="10,3,10,3" FontSize="12" Margin="10,0,0,0"/>
+            <Button Content="Обновить" Click="RefreshButton_Click" Style="{StaticResource PrimaryButton}" Padding="10,3,10,3" FontSize="12" Margin="10,0,0,0"/>
         </StackPanel>
 
         <!-- Список заказов -->
-        <ListView x:Name="lvOrders" Grid.Row="1" SelectionChanged="LvOrders_SelectionChanged">
+        <ListView x:Name="ordersListView" Grid.Row="1" SelectionChanged="OrdersListView_SelectionChanged">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="№" Width="50" DisplayMemberBinding="{Binding OrderNumber}"/>
@@ -54,12 +54,12 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Статус:" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                <ComboBox Grid.Column="1" x:Name="cmbStatus" Width="120" VerticalAlignment="Center" SelectionChanged="CmbStatus_SelectionChanged"/>
+                <ComboBox Grid.Column="1" x:Name="cmbStatus" Width="120" VerticalAlignment="Center" SelectionChanged="StatusComboBox_SelectionChanged"/>
 
                 <TextBlock Grid.Column="2" Text="Дата доставки:" VerticalAlignment="Center" Margin="15,0,10,0"/>
                 <DatePicker Grid.Column="3" x:Name="dpDeliveryDate" Width="120" VerticalAlignment="Center" SelectedDateChanged="DpDeliveryDate_SelectedDateChanged"/>
 
-                <Button Grid.Column="4" Content="Удалить" Click="BtnDeleteOrder_Click" 
+                <Button Grid.Column="4" Content="Удалить" Click="DeleteOrderButton_Click" 
                         Style="{StaticResource PrimaryButton}" Padding="10,3,10,3" FontSize="12" 
                         Background="DarkRed" Margin="15,0,0,0"/>
             </Grid>

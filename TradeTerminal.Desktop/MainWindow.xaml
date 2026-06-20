@@ -39,19 +39,19 @@
                 <TextBlock Grid.Column="1" x:Name="lblUser" Text="👤 Гость" FontSize="14" Foreground="White" 
                            HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,20,0"/>
 
-                <Button Grid.Column="2" x:Name="btnLogin" Content="Войти" Click="BtnLogin_Click" 
+                <Button Grid.Column="2" x:Name="btnLogin" Content="Войти" Click="LoginButton_Click" 
                         Style="{StaticResource PrimaryButton}" Width="90" Margin="0,0,8,0"/>
 
                 <Button Grid.Column="3" x:Name="btnManageOrders" Content="📋 Заказы" 
-                        Click="BtnManageOrders_Click" Style="{StaticResource PrimaryButton}" 
+                        Click="ManageOrdersButton_Click" Style="{StaticResource PrimaryButton}" 
                         Visibility="Collapsed" Margin="0,0,8,0" Width="100"/>
 
-                <Button Grid.Column="4" x:Name="btnViewOrder" Content="🛒 Корзина" 
+                <Button Grid.Column="4" x:Name="buttonViewOrder" Content="🛒 Корзина" 
                         Click="ButtonViewOrder_Click" Style="{StaticResource PrimaryButton}" 
                         Visibility="Collapsed" Margin="0,0,8,0"/>
 
-                <Button Grid.Column="5" x:Name="btnRefresh" Content="🔄" 
-                        Click="BtnRefresh_Click" Style="{StaticResource PrimaryButton}" 
+                <Button Grid.Column="5" x:Name="btnRefresh" Content="&#x27F3;" 
+                        Click="RefreshButton_Click" Style="{StaticResource PrimaryButton}" 
                         Width="40" Margin="0,0,0,0" FontSize="18"/>
             </Grid>
         </Border>
@@ -61,7 +61,7 @@
                 <!-- Поиск -->
                 <StackPanel Orientation="Horizontal" Margin="0,2,10,2">
                     <TextBlock Text="🔍" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox x:Name="txtSearch" Width="140" Height="30" TextChanged="TxtFilter_TextChanged" 
+                    <TextBox x:Name="txtSearch" Width="140" Height="30" TextChanged="FilterTextBox_TextChanged" 
                              ToolTip="Введите название" VerticalContentAlignment="Center"/>
                 </StackPanel>
 
@@ -69,31 +69,31 @@
                 <StackPanel Orientation="Horizontal" Margin="0,2,10,2">
                     <TextBlock Text="Производитель:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                     <ComboBox x:Name="cmbManufacturer" Width="130" Height="30" 
-                              SelectionChanged="CmbFilter_SelectionChanged" VerticalContentAlignment="Center"/>
+                              SelectionChanged="FilterComboBox_SelectionChanged" VerticalContentAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Категория -->
                 <StackPanel Orientation="Horizontal" Margin="0,2,10,2">
                     <TextBlock Text="Категория:" VerticalAlignment="Center" Margin="0,0,5,0"/>
                     <ComboBox x:Name="cmbCategory" Width="130" Height="30" 
-                              SelectionChanged="CmbFilter_SelectionChanged" VerticalContentAlignment="Center"/>
+                              SelectionChanged="FilterComboBox_SelectionChanged" VerticalContentAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Цена -->
                 <StackPanel Orientation="Horizontal" Margin="0,2,15,2">
                     <TextBlock Text="Цена:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox x:Name="txtMinPrice" Width="55" Height="30" TextChanged="TxtFilter_TextChanged"
+                    <TextBox x:Name="txtMinPrice" Width="55" Height="30" TextChanged="FilterTextBox_TextChanged"
                              ToolTip="Мин. цена" VerticalContentAlignment="Center" TextAlignment="Center"/>
                     <TextBlock Text="-" VerticalAlignment="Center" FontWeight="Bold" Margin="4,0"/>
-                    <TextBox x:Name="txtMaxPrice" Width="55" Height="30" TextChanged="TxtFilter_TextChanged"
+                    <TextBox x:Name="txtMaxPrice" Width="55" Height="30" TextChanged="FilterTextBox_TextChanged"
                              ToolTip="Макс. цена" VerticalContentAlignment="Center" TextAlignment="Center"/>
                 </StackPanel>
 
                 <!-- Кнопки сортировки -->
                 <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
-                    <Button x:Name="btnSortName" Content="📝 Имя ↑" Click="BtnSortName_Click" 
+                    <Button x:Name="buttonSortName" Content="Имя" Click="SortNameButton_Click" 
                             Style="{StaticResource PrimaryButton}" Padding="8,5" FontSize="11" Width="85" Height="30" Margin="0,0,5,0"/>
-                    <Button x:Name="btnSortPrice" Content="💰 Цена" Click="BtnSortPrice_Click" 
+                    <Button x:Name="btnSortPrice" Content="Цена" Click="SortPriceButton_Click" 
                             Style="{StaticResource PrimaryButton}" Padding="8,5" FontSize="11" Width="85" Height="30"/>
                 </StackPanel>
             </WrapPanel>
