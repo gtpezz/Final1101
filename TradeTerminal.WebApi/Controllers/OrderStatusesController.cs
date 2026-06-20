@@ -11,14 +11,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class OrderStatusesController : ControllerBase
+public class OrderStatusesController(IOrderStatusService service) : ControllerBase
 {
-    private readonly OrderStatusService _orderStatusService;
-
-    public OrderStatusesController(OrderStatusService orderStatusService)
-    {
-        _orderStatusService = orderStatusService;
-    }
+    private readonly IOrderStatusService _service = service;
 
     /// <summary>
     /// Получить все статусы заказов
@@ -26,7 +21,7 @@ public class OrderStatusesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var statuses = await _orderStatusService.GetAllStatusesAsync();
+        var statuses = await _service.GetAllStatusesAsync();
         return Ok(statuses);
     }
 
@@ -36,7 +31,7 @@ public class OrderStatusesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var status = await _orderStatusService.GetStatusByIdAsync(id);
+        var status = await _service.GetStatusByIdAsync(id);
         if (status == null)
             return NotFound(new { message = "Статус не найден" });
         return Ok(status);
@@ -48,7 +43,7 @@ public class OrderStatusesController : ControllerBase
     [HttpGet("name/{name}")]
     public async Task<IActionResult> GetByName(string name)
     {
-        var status = await _orderStatusService.GetStatusByNameAsync(name);
+        var status = await _service.GetStatusByNameAsync(name);
         if (status == null)
             return NotFound(new { message = "Статус не найден" });
         return Ok(status);
@@ -63,7 +58,7 @@ public class OrderStatusesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        await _orderStatusService.AddStatusAsync(status);
+        await _service.AddStatusAsync(status);
         return CreatedAtAction(nameof(GetById), new { id = status.Id }, status);
     }
 
@@ -76,11 +71,11 @@ public class OrderStatusesController : ControllerBase
         if (id != status.Id)
             return BadRequest(new { message = "ID не совпадают" });
 
-        var existing = await _orderStatusService.GetStatusByIdAsync(id);
+        var existing = await _service.GetStatusByIdAsync(id);
         if (existing == null)
             return NotFound(new { message = "Статус не найден" });
 
-        await _orderStatusService.UpdateStatusAsync(status);
+        await _service.UpdateStatusAsync(status);
         return Ok(status);
     }
 
@@ -90,11 +85,11 @@ public class OrderStatusesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var status = await _orderStatusService.GetStatusByIdAsync(id);
+        var status = await _service.GetStatusByIdAsync(id);
         if (status == null)
             return NotFound(new { message = "Статус не найден" });
 
-        await _orderStatusService.DeleteStatusAsync(id);
+        await _service.DeleteStatusAsync(id);
         return Ok(new { message = "Статус удален" });
     }
 }

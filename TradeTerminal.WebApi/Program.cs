@@ -23,9 +23,9 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<ManufacturerService>();
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<OrderStatusService>();
+builder.Services.AddScoped<IManufacturerService, ManufacturerService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IOrderStatusService, OrderStatusService>();
 
 var app = builder.Build();
 

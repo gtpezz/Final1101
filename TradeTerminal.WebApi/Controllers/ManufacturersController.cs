@@ -11,14 +11,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ManufacturersController : ControllerBase
+public class ManufacturersController(IManufacturerService service) : ControllerBase
 {
-    private readonly ManufacturerService _manufacturerService;
-
-    public ManufacturersController(ManufacturerService manufacturerService)
-    {
-        _manufacturerService = manufacturerService;
-    }
+    private readonly IManufacturerService _service = service;
 
     /// <summary>
     /// Получить всех производителей
@@ -26,7 +21,7 @@ public class ManufacturersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var manufacturers = await _manufacturerService.GetAllManufacturersAsync();
+        var manufacturers = await _service.GetAllManufacturersAsync();
         return Ok(manufacturers);
     }
 
@@ -36,7 +31,7 @@ public class ManufacturersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
+        var manufacturer = await _service.GetManufacturerByIdAsync(id);
         if (manufacturer == null)
             return NotFound(new { message = "Производитель не найден" });
         return Ok(manufacturer);
@@ -51,10 +46,10 @@ public class ManufacturersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (await _manufacturerService.ManufacturerExistsAsync(manufacturer.Name))
+        if (await _service.ManufacturerExistsAsync(manufacturer.Name))
             return BadRequest(new { message = "Производитель с таким названием уже существует" });
 
-        await _manufacturerService.AddManufacturerAsync(manufacturer);
+        await _service.AddManufacturerAsync(manufacturer);
         return CreatedAtAction(nameof(GetById), new { id = manufacturer.Id }, manufacturer);
     }
 
@@ -67,11 +62,11 @@ public class ManufacturersController : ControllerBase
         if (id != manufacturer.Id)
             return BadRequest(new { message = "ID не совпадают" });
 
-        var existing = await _manufacturerService.GetManufacturerByIdAsync(id);
+        var existing = await _service.GetManufacturerByIdAsync(id);
         if (existing == null)
             return NotFound(new { message = "Производитель не найден" });
 
-        await _manufacturerService.UpdateManufacturerAsync(manufacturer);
+        await _service.UpdateManufacturerAsync(manufacturer);
         return Ok(manufacturer);
     }
 
@@ -81,11 +76,11 @@ public class ManufacturersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var manufacturer = await _manufacturerService.GetManufacturerByIdAsync(id);
+        var manufacturer = await _service.GetManufacturerByIdAsync(id);
         if (manufacturer == null)
             return NotFound(new { message = "Производитель не найден" });
 
-        await _manufacturerService.DeleteManufacturerAsync(id);
+        await _service.DeleteManufacturerAsync(id);
         return Ok(new { message = "Производитель удален" });
     }
 }

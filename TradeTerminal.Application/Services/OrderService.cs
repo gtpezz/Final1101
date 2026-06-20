@@ -58,7 +58,7 @@ public class OrderService
     /// <summary>
     /// Получить заказ по идентификатору в виде DTO
     /// </summary>
-    public async Task<OrderDto> GetOrderByIdAsync(int id)
+    public async Task<OrderDto?> GetOrderByIdAsync(int id)
     {
         return await _context.Orders
             .Include(o => o.User)
@@ -95,7 +95,7 @@ public class OrderService
     /// <summary>
     /// Получить заказ по номеру в виде DTO
     /// </summary>
-    public async Task<OrderDto> GetOrderByNumberAsync(int orderNumber)
+    public async Task<OrderDto?> GetOrderByNumberAsync(int orderNumber)
     {
         return await _context.Orders
             .Include(o => o.User)
@@ -448,7 +448,7 @@ public class OrderService
     /// <summary>
     /// Получить заказ как сущность (для внутреннего использования)
     /// </summary>
-    public async Task<Order> GetOrderEntityByIdAsync(int id)
+    public async Task<Order?> GetOrderEntityByIdAsync(int id)
     {
         return await _context.Orders
             .Include(o => o.User)
@@ -461,7 +461,7 @@ public class OrderService
     /// <summary>
     /// Получить заказ как сущность по номеру (для внутреннего использования)
     /// </summary>
-    public async Task<Order> GetOrderEntityByNumberAsync(int orderNumber)
+    public async Task<Order?> GetOrderEntityByNumberAsync(int orderNumber)
     {
         return await _context.Orders
             .Include(o => o.User)

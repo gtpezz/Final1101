@@ -11,14 +11,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class AuthController : ControllerBase
+public class AuthController(UserService service) : ControllerBase
 {
-    private readonly UserService _userService;
-
-    public AuthController(UserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly UserService _service = service;
 
     /// <summary>
     /// Вход в систему
@@ -29,7 +24,7 @@ public class AuthController : ControllerBase
         if (string.IsNullOrEmpty(request.Login) || string.IsNullOrEmpty(request.Password))
             return BadRequest(new { message = "Логин и пароль обязательны" });
 
-        var user = await _userService.AuthenticateUserAsync(request.Login, request.Password);
+        var user = await _service.AuthenticateUserAsync(request.Login, request.Password);
 
         if (user == null)
             return Unauthorized(new { message = "Неверный логин или пароль" });
@@ -51,7 +46,7 @@ public class AuthController : ControllerBase
     [HttpPost("check")]
     public async Task<IActionResult> CheckUser([FromBody] LoginRequest request)
     {
-        var user = await _userService.GetUserByLoginAsync(request.Login);
+        var user = await _service.GetUserByLoginAsync(request.Login);
         if (user == null)
             return NotFound(new { exists = false, message = "Пользователь не найден" });
 
@@ -64,7 +59,7 @@ public class AuthController : ControllerBase
     [HttpGet("me")]
     public async Task<IActionResult> GetCurrentUser([FromQuery] string login)
     {
-        var user = await _userService.GetUserByLoginAsync(login);
+        var user = await _service.GetUserByLoginAsync(login);
         if (user == null)
             return NotFound(new { message = "Пользователь не найден" });
 

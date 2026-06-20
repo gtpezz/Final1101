@@ -11,14 +11,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class CategoriesController : ControllerBase
+public class CategoriesController(ICategoryService service) : ControllerBase
 {
-    private readonly CategoryService _categoryService;
-
-    public CategoriesController(CategoryService categoryService)
-    {
-        _categoryService = categoryService;
-    }
+    private readonly ICategoryService _service = service;
 
     /// <summary>
     /// Получить все категории
@@ -26,7 +21,7 @@ public class CategoriesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var categories = await _categoryService.GetAllCategoriesAsync();
+        var categories = await _service.GetAllCategoriesAsync();
         return Ok(categories);
     }
 
@@ -36,7 +31,7 @@ public class CategoriesController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var category = await _categoryService.GetCategoryByIdAsync(id);
+        var category = await _service.GetCategoryByIdAsync(id);
         if (category == null)
             return NotFound(new { message = "Категория не найдена" });
         return Ok(category);
@@ -51,10 +46,10 @@ public class CategoriesController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (await _categoryService.CategoryExistsAsync(category.Name))
+        if (await _service.CategoryExistsAsync(category.Name))
             return BadRequest(new { message = "Категория с таким названием уже существует" });
 
-        await _categoryService.AddCategoryAsync(category);
+        await _service.AddCategoryAsync(category);
         return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
     }
 
@@ -67,11 +62,11 @@ public class CategoriesController : ControllerBase
         if (id != category.Id)
             return BadRequest(new { message = "ID не совпадают" });
 
-        var existing = await _categoryService.GetCategoryByIdAsync(id);
+        var existing = await _service.GetCategoryByIdAsync(id);
         if (existing == null)
             return NotFound(new { message = "Категория не найдена" });
 
-        await _categoryService.UpdateCategoryAsync(category);
+        await _service.UpdateCategoryAsync(category);
         return Ok(category);
     }
 
@@ -81,11 +76,11 @@ public class CategoriesController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var category = await _categoryService.GetCategoryByIdAsync(id);
+        var category = await _service.GetCategoryByIdAsync(id);
         if (category == null)
             return NotFound(new { message = "Категория не найдена" });
 
-        await _categoryService.DeleteCategoryAsync(id);
+        await _service.DeleteCategoryAsync(id);
         return Ok(new { message = "Категория удалена" });
     }
 }

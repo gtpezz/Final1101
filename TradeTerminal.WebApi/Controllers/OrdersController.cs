@@ -10,14 +10,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class OrdersController : ControllerBase
+public class OrdersController(OrderService service) : ControllerBase
 {
-    private readonly OrderService _orderService;
-
-    public OrdersController(OrderService orderService)
-    {
-        _orderService = orderService;
-    }
+    private readonly OrderService _service = service;
 
     /// <summary>
     /// Получить все заказы
@@ -25,7 +20,7 @@ public class OrdersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var orders = await _orderService.GetAllOrdersAsync();
+        var orders = await _service.GetAllOrdersAsync();
         return Ok(orders);
     }
 
@@ -35,7 +30,7 @@ public class OrdersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var order = await _orderService.GetOrderByIdAsync(id);
+        var order = await _service.GetOrderByIdAsync(id);
         if (order == null)
             return NotFound(new { message = "Заказ не найден" });
         return Ok(order);
@@ -47,7 +42,7 @@ public class OrdersController : ControllerBase
     [HttpGet("number/{orderNumber}")]
     public async Task<IActionResult> GetByNumber(int orderNumber)
     {
-        var order = await _orderService.GetOrderByNumberAsync(orderNumber);
+        var order = await _service.GetOrderByNumberAsync(orderNumber);
         if (order == null)
             return NotFound(new { message = "Заказ не найден" });
         return Ok(order);
@@ -59,7 +54,7 @@ public class OrdersController : ControllerBase
     [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetByUser(int userId)
     {
-        var orders = await _orderService.GetOrdersByUserAsync(userId);
+        var orders = await _service.GetOrdersByUserAsync(userId);
         return Ok(orders);
     }
 
@@ -69,7 +64,7 @@ public class OrdersController : ControllerBase
     [HttpGet("status/{statusId}")]
     public async Task<IActionResult> GetByStatus(int statusId)
     {
-        var orders = await _orderService.GetOrdersByStatusAsync(statusId);
+        var orders = await _service.GetOrdersByStatusAsync(statusId);
         return Ok(orders);
     }
 
@@ -79,7 +74,7 @@ public class OrdersController : ControllerBase
     [HttpGet("period")]
     public async Task<IActionResult> GetByDateRange([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
     {
-        var orders = await _orderService.GetOrdersByDateRangeAsync(startDate, endDate);
+        var orders = await _service.GetOrdersByDateRangeAsync(startDate, endDate);
         return Ok(orders);
     }
 
@@ -93,8 +88,8 @@ public class OrdersController : ControllerBase
         var random = new Random();
         var pickupCode = random.Next(100, 999).ToString();
 
-        var orderId = await _orderService.CreateOrderAsync(request.UserId, pickupCode);
-        var order = await _orderService.GetOrderByIdAsync(orderId);
+        var orderId = await _service.CreateOrderAsync(request.UserId, pickupCode);
+        var order = await _service.GetOrderByIdAsync(orderId);
 
         return CreatedAtAction(nameof(GetById), new { id = orderId }, order);
     }
@@ -105,13 +100,13 @@ public class OrdersController : ControllerBase
     [HttpPost("{orderId}/items")]
     public async Task<IActionResult> AddItem(int orderId, [FromBody] AddItemRequest request)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
         try
         {
-            await _orderService.AddItemToOrderAsync(orderId, request.ProductId, request.Quantity);
-            var order = await _orderService.GetOrderByIdAsync(orderId);
+            await _service.AddItemToOrderAsync(orderId, request.ProductId, request.Quantity);
+            var order = await _service.GetOrderByIdAsync(orderId);
             return Ok(order);
         }
         catch (Exception ex)
@@ -126,11 +121,11 @@ public class OrdersController : ControllerBase
     [HttpDelete("{orderId}/items/{productId}")]
     public async Task<IActionResult> RemoveItem(int orderId, int productId)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
-        await _orderService.RemoveItemFromOrderAsync(orderId, productId);
-        var order = await _orderService.GetOrderByIdAsync(orderId);
+        await _service.RemoveItemFromOrderAsync(orderId, productId);
+        var order = await _service.GetOrderByIdAsync(orderId);
         return Ok(order);
     }
 
@@ -140,11 +135,11 @@ public class OrdersController : ControllerBase
     [HttpPut("{orderId}/status")]
     public async Task<IActionResult> UpdateStatus(int orderId, [FromBody] UpdateStatusRequest request)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
-        await _orderService.UpdateOrderStatusAsync(orderId, request.StatusId);
-        var order = await _orderService.GetOrderByIdAsync(orderId);
+        await _service.UpdateOrderStatusAsync(orderId, request.StatusId);
+        var order = await _service.GetOrderByIdAsync(orderId);
         return Ok(order);
     }
 
@@ -154,11 +149,11 @@ public class OrdersController : ControllerBase
     [HttpPut("{orderId}/delivery")]
     public async Task<IActionResult> UpdateDeliveryDate(int orderId, [FromBody] UpdateDeliveryRequest request)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
-        await _orderService.UpdateDeliveryDateAsync(orderId, request.DeliveryDate);
-        var order = await _orderService.GetOrderByIdAsync(orderId);
+        await _service.UpdateDeliveryDateAsync(orderId, request.DeliveryDate);
+        var order = await _service.GetOrderByIdAsync(orderId);
         return Ok(order);
     }
 
@@ -168,10 +163,10 @@ public class OrdersController : ControllerBase
     [HttpGet("{orderId}/items")]
     public async Task<IActionResult> GetItems(int orderId)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
-        var items = await _orderService.GetOrderItemsAsync(orderId);
+        var items = await _service.GetOrderItemsAsync(orderId);
         return Ok(items);
     }
 
@@ -181,10 +176,10 @@ public class OrdersController : ControllerBase
     [HttpGet("{orderId}/total")]
     public async Task<IActionResult> GetTotal(int orderId)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
-        var total = await _orderService.CalculateOrderTotalAsync(orderId);
+        var total = await _service.CalculateOrderTotalAsync(orderId);
         return Ok(new { total = total });
     }
 
@@ -194,7 +189,7 @@ public class OrdersController : ControllerBase
     [HttpGet("count")]
     public async Task<IActionResult> GetCount()
     {
-        var count = await _orderService.GetOrdersCountAsync();
+        var count = await _service.GetOrdersCountAsync();
         return Ok(new { total = count });
     }
 
@@ -204,7 +199,7 @@ public class OrdersController : ControllerBase
     [HttpGet("count/status/{statusId}")]
     public async Task<IActionResult> GetCountByStatus(int statusId)
     {
-        var count = await _orderService.GetOrdersCountByStatusAsync(statusId);
+        var count = await _service.GetOrdersCountByStatusAsync(statusId);
         return Ok(new { total = count });
     }
 
@@ -214,10 +209,10 @@ public class OrdersController : ControllerBase
     [HttpDelete("{orderId}")]
     public async Task<IActionResult> Delete(int orderId)
     {
-        if (!await _orderService.OrderExistsAsync(orderId))
+        if (!await _service.OrderExistsAsync(orderId))
             return NotFound(new { message = "Заказ не найден" });
 
-        await _orderService.DeleteOrderAsync(orderId);
+        await _service.DeleteOrderAsync(orderId);
         return Ok(new { message = "Заказ удален" });
     }
 }

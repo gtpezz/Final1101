@@ -9,14 +9,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class UsersController : ControllerBase
+public class UsersController(UserService service) : ControllerBase
 {
-    private readonly UserService _userService;
-
-    public UsersController(UserService userService)
-    {
-        _userService = userService;
-    }
+    private readonly UserService _service = service;
 
     /// <summary>
     /// Получить всех пользователей
@@ -24,7 +19,7 @@ public class UsersController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var users = await _userService.GetAllUsersAsync();
+        var users = await _service.GetAllUsersAsync();
         return Ok(users);
     }
 
@@ -34,7 +29,7 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var user = await _userService.GetUserByIdAsync(id);
+        var user = await _service.GetUserByIdAsync(id);
         if (user == null)
             return NotFound(new { message = "Пользователь не найден" });
         return Ok(user);
@@ -46,7 +41,7 @@ public class UsersController : ControllerBase
     [HttpGet("login/{login}")]
     public async Task<IActionResult> GetByLogin(string login)
     {
-        var user = await _userService.GetUserByLoginAsync(login);
+        var user = await _service.GetUserByLoginAsync(login);
         if (user == null)
             return NotFound(new { message = "Пользователь не найден" });
         return Ok(user);
@@ -58,7 +53,7 @@ public class UsersController : ControllerBase
     [HttpGet("role/{roleId}")]
     public async Task<IActionResult> GetByRole(int roleId)
     {
-        var users = await _userService.GetUsersByRoleAsync(roleId);
+        var users = await _service.GetUsersByRoleAsync(roleId);
         return Ok(users);
     }
 
@@ -71,10 +66,10 @@ public class UsersController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        if (await _userService.UserExistsAsync(user.Login))
+        if (await _service.UserExistsAsync(user.Login))
             return BadRequest(new { message = "Пользователь с таким логином уже существует" });
 
-        await _userService.AddUserAsync(user);
+        await _service.AddUserAsync(user);
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
 
@@ -87,11 +82,11 @@ public class UsersController : ControllerBase
         if (id != user.Id)
             return BadRequest(new { message = "ID не совпадают" });
 
-        var existing = await _userService.GetUserByIdAsync(id);
+        var existing = await _service.GetUserByIdAsync(id);
         if (existing == null)
             return NotFound(new { message = "Пользователь не найден" });
 
-        await _userService.UpdateUserAsync(user);
+        await _service.UpdateUserAsync(user);
         return Ok(user);
     }
 
@@ -101,11 +96,11 @@ public class UsersController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var user = await _userService.GetUserByIdAsync(id);
+        var user = await _service.GetUserByIdAsync(id);
         if (user == null)
             return NotFound(new { message = "Пользователь не найден" });
 
-        await _userService.DeleteUserAsync(id);
+        await _service.DeleteUserAsync(id);
         return Ok(new { message = "Пользователь удален" });
     }
 
@@ -115,7 +110,7 @@ public class UsersController : ControllerBase
     [HttpGet("count")]
     public async Task<IActionResult> GetCount()
     {
-        var count = await _userService.GetUsersCountAsync();
+        var count = await _service.GetUsersCountAsync();
         return Ok(new { total = count });
     }
 }

@@ -12,14 +12,9 @@ namespace TradeTerminal.WebApi.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-public class ProductsController : ControllerBase
+public class ProductsController(ProductService service) : ControllerBase
 {
-    private readonly ProductService _productService;
-
-    public ProductsController(ProductService productService)
-    {
-        _productService = productService;
-    }
+    private readonly ProductService _service = service;
 
     /// <summary>
     /// Получить все товары
@@ -27,7 +22,7 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        var products = await _productService.GetAllProductsAsync();
+        var products = await _service.GetAllProductsAsync();
         return Ok(products);
     }
 
@@ -37,7 +32,7 @@ public class ProductsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _service.GetProductByIdAsync(id);
         if (product == null)
             return NotFound(new { message = "Товар не найден" });
         return Ok(product);
@@ -49,7 +44,7 @@ public class ProductsController : ControllerBase
     [HttpGet("article/{article}")]
     public async Task<IActionResult> GetByArticle(string article)
     {
-        var product = await _productService.GetProductByArticleAsync(article);
+        var product = await _service.GetProductByArticleAsync(article);
         if (product == null)
             return NotFound(new { message = "Товар не найден" });
         return Ok(product);
@@ -61,7 +56,7 @@ public class ProductsController : ControllerBase
     [HttpGet("search")]
     public async Task<IActionResult> Search([FromQuery] string term)
     {
-        var products = await _productService.SearchProductsAsync(term);
+        var products = await _service.SearchProductsAsync(term);
         return Ok(products);
     }
 
@@ -75,7 +70,7 @@ public class ProductsController : ControllerBase
         [FromQuery] decimal? minPrice,
         [FromQuery] decimal? maxPrice)
     {
-        var products = await _productService.FilterProductsAsync(
+        var products = await _service.FilterProductsAsync(
             manufacturerId, categoryId, minPrice, maxPrice);
         return Ok(products);
     }
@@ -86,7 +81,7 @@ public class ProductsController : ControllerBase
     [HttpGet("category/{categoryId}")]
     public async Task<IActionResult> GetByCategory(int categoryId)
     {
-        var products = await _productService.GetProductsByCategoryAsync(categoryId);
+        var products = await _service.GetProductsByCategoryAsync(categoryId);
         return Ok(products);
     }
 
@@ -96,7 +91,7 @@ public class ProductsController : ControllerBase
     [HttpGet("manufacturer/{manufacturerId}")]
     public async Task<IActionResult> GetByManufacturer(int manufacturerId)
     {
-        var products = await _productService.GetProductsByManufacturerAsync(manufacturerId);
+        var products = await _service.GetProductsByManufacturerAsync(manufacturerId);
         return Ok(products);
     }
 
@@ -106,7 +101,7 @@ public class ProductsController : ControllerBase
     [HttpGet("count")]
     public async Task<IActionResult> GetCount()
     {
-        var count = await _productService.GetTotalCountAsync();
+        var count = await _service.GetTotalCountAsync();
         return Ok(new { total = count });
     }
 
@@ -119,7 +114,7 @@ public class ProductsController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        await _productService.AddProductAsync(product);
+        await _service.AddProductAsync(product);
         return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
     }
 
@@ -132,11 +127,11 @@ public class ProductsController : ControllerBase
         if (id != product.Id)
             return BadRequest(new { message = "ID не совпадают" });
 
-        var existing = await _productService.GetProductByIdAsync(id);
+        var existing = await _service.GetProductByIdAsync(id);
         if (existing == null)
             return NotFound(new { message = "Товар не найден" });
 
-        await _productService.UpdateProductAsync(product);
+        await _service.UpdateProductAsync(product);
         return Ok(product);
     }
 
@@ -146,11 +141,11 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _service.GetProductByIdAsync(id);
         if (product == null)
             return NotFound(new { message = "Товар не найден" });
 
-        await _productService.DeleteProductAsync(id);
+        await _service.DeleteProductAsync(id);
         return Ok(new { message = "Товар удален" });
     }
 }
