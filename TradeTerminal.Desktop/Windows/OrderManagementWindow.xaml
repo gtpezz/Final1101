@@ -32,7 +32,11 @@
                     <GridViewColumn Header="Дата" Width="120" DisplayMemberBinding="{Binding OrderDate, StringFormat={}{0:dd.MM.yyyy}}"/>
                     <GridViewColumn Header="Клиент" Width="150" DisplayMemberBinding="{Binding UserFullName}"/>
                     <GridViewColumn Header="Статус" Width="120" DisplayMemberBinding="{Binding StatusName}"/>
-                    <GridViewColumn Header="Сумма" Width="100" DisplayMemberBinding="{Binding TotalAmount, StringFormat={}{0:C}}"/>
+                    <GridViewColumn Header="Сумма" Width="100">
+                        <GridViewColumn.DisplayMemberBinding>
+                            <Binding Path="TotalAmount" StringFormat="{}{0:C}" ConverterCulture="ru-RU"/>
+                        </GridViewColumn.DisplayMemberBinding>
+                    </GridViewColumn>
                     <GridViewColumn Header="Код" Width="70" DisplayMemberBinding="{Binding PickupCode}"/>
                 </GridView>
             </ListView.View>

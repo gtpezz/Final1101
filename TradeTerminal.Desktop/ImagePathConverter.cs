@@ -8,6 +8,7 @@ namespace TradeTerminal.Desktop;
 public class ImagePathConverter : IValueConverter
 {
     private readonly string _imagesPath;
+    private readonly string _defaultImageName = "picture.png";
 
     public ImagePathConverter()
     {
@@ -23,7 +24,9 @@ public class ImagePathConverter : IValueConverter
 
         try
         {
-            var filePath = Path.Combine(_imagesPath, value.ToString());
+            var fileName = value.ToString();
+            var filePath = Path.Combine(_imagesPath, fileName);
+
             if (File.Exists(filePath))
             {
                 var bitmap = new BitmapImage();
@@ -33,22 +36,18 @@ public class ImagePathConverter : IValueConverter
                 bitmap.EndInit();
                 return bitmap;
             }
-            else
-            {
-                return GetDefaultImage();
-            }
         }
         catch
-        {
-            return GetDefaultImage();
-        }
+        { }
+
+        return GetDefaultImage();
     }
 
     private BitmapImage GetDefaultImage()
     {
         try
         {
-            var defaultPath = Path.Combine(_imagesPath, "no_image.png");
+            var defaultPath = Path.Combine(_imagesPath, _defaultImageName);
             if (File.Exists(defaultPath))
             {
                 var bitmap = new BitmapImage();
@@ -60,6 +59,7 @@ public class ImagePathConverter : IValueConverter
             }
         }
         catch { }
+
         return null;
     }
 
