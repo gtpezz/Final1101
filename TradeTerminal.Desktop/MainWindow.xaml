@@ -10,7 +10,10 @@
         Height="750" Width="1100"
         MinHeight="650" MinWidth="950"
         Background="White" FontFamily="Calibri"
-        Closing="Window_Closing">
+        Closing="Window_Closing"
+        WindowStartupLocation="CenterScreen"
+        Icon="/Images/icon.ico"
+        >
 
     <Grid>
         <Grid.RowDefinitions>

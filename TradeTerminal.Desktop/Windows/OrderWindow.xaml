@@ -18,25 +18,21 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- Номер заказа -->
         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
             <TextBlock Text="Заказ №" FontSize="18" FontWeight="Bold"/>
             <TextBlock x:Name="orderNumberLabel" FontSize="18" FontWeight="Bold"/>
         </StackPanel>
 
-        <!-- Информация о клиенте -->
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
             <TextBlock Text="Клиент: " FontSize="14"/>
             <TextBlock x:Name="clientLabel" FontSize="14" FontWeight="Bold"/>
         </StackPanel>
 
-        <!-- Код получения -->
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,15">
             <TextBlock Text="Код получения: " FontSize="14"/>
             <TextBlock x:Name="pickupCodeLabel" FontSize="14" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
         </StackPanel>
 
-        <!-- Список товаров -->
         <ListView x:Name="itemsListView" Grid.Row="3" Margin="0,0,0,10">
             <ListView.View>
                 <GridView>
@@ -56,19 +52,17 @@
             </ListView.View>
         </ListView>
 
-        <!-- Итого -->
         <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,15">
             <TextBlock Text="Итого: " FontSize="18" FontWeight="Bold"/>
             <TextBlock x:Name="totalLabel" FontSize="18" FontWeight="Bold" Foreground="{StaticResource AccentBrush}"/>
         </StackPanel>
 
-        <!-- Кнопки -->
         <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="💾 Сохранить талон (txt)" Click="SaveTicketButton_Click" 
+            <Button Content="Сохранить талон (txt)" Click="SaveTicketButton_Click" 
                     Style="{StaticResource PrimaryButton}" Width="180" Margin="0,0,10,0"/>
-            <Button Content="✅ Оформить заказ" Click="CheckoutButton_Click" 
+            <Button Content="Оформить заказ" Click="CheckoutButton_Click" 
                     Style="{StaticResource PrimaryButton}" Width="150" Margin="0,0,10,0"/>
-            <Button Content="🗑 Очистить корзину" Click="ClearButton_Click" 
+            <Button Content="Очистить корзину" Click="ClearButton_Click" 
                     Style="{StaticResource PrimaryButton}" Width="156" Background="DarkGray"/>
         </StackPanel>
     </Grid>

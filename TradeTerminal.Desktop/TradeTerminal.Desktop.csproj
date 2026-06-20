@@ -29,6 +29,7 @@
     <None Remove="Images\7.jpg" />
     <None Remove="Images\8.jpg" />
     <None Remove="Images\9.jpg" />
+    <None Remove="Images\icon.ico" />
     <None Remove="Images\icon.png" />
     <None Remove="Images\picture.png" />
   </ItemGroup>
@@ -116,6 +117,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Images\icon.png" />
   </ItemGroup>
 
