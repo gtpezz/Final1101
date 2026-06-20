@@ -1,12 +1,3 @@
--- =============================================
--- База данных: ispp41
--- Система торгового терминала для ТЦ
--- =============================================
-
-USE ispp41;
-GO
-
--- Удаляем все таблицы, если они существуют (в правильном порядке из-за внешних ключей)
 IF OBJECT_ID('OrderItems', 'U') IS NOT NULL DROP TABLE OrderItems;
 IF OBJECT_ID('Orders', 'U') IS NOT NULL DROP TABLE Orders;
 IF OBJECT_ID('OrderStatuses', 'U') IS NOT NULL DROP TABLE OrderStatuses;
@@ -17,27 +8,18 @@ IF OBJECT_ID('Categories', 'U') IS NOT NULL DROP TABLE Categories;
 IF OBJECT_ID('Manufacturers', 'U') IS NOT NULL DROP TABLE Manufacturers;
 GO
 
--- =============================================
--- Таблица: Производители (Manufacturers)
--- =============================================
 CREATE TABLE Manufacturers (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(200) NOT NULL UNIQUE
 );
 GO
 
--- =============================================
--- Таблица: Категории товаров (Categories)
--- =============================================
 CREATE TABLE Categories (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(200) NOT NULL UNIQUE
 );
 GO
 
--- =============================================
--- Таблица: Товары (Products)
--- =============================================
 CREATE TABLE Products (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Article NVARCHAR(50) NOT NULL UNIQUE,
@@ -59,18 +41,12 @@ CREATE TABLE Products (
 );
 GO
 
--- =============================================
--- Таблица: Роли пользователей (Roles)
--- =============================================
 CREATE TABLE Roles (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(50) NOT NULL UNIQUE
 );
 GO
 
--- =============================================
--- Таблица: Пользователи (Users)
--- =============================================
 CREATE TABLE Users (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     RoleId INT NOT NULL,
@@ -83,18 +59,12 @@ CREATE TABLE Users (
 );
 GO
 
--- =============================================
--- Таблица: Статусы заказов (OrderStatuses)
--- =============================================
 CREATE TABLE OrderStatuses (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     Name NVARCHAR(50) NOT NULL UNIQUE
 );
 GO
 
--- =============================================
--- Таблица: Заказы (Orders)
--- =============================================
 CREATE TABLE Orders (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     OrderNumber INT NOT NULL UNIQUE,
@@ -112,9 +82,6 @@ CREATE TABLE Orders (
 );
 GO
 
--- =============================================
--- Таблица: Товары в заказе (OrderItems)
--- =============================================
 CREATE TABLE OrderItems (
     Id INT IDENTITY(1,1) PRIMARY KEY,
     OrderId INT NOT NULL,
@@ -130,27 +97,18 @@ CREATE TABLE OrderItems (
 );
 GO
 
--- =============================================
--- Вставка ролей
--- =============================================
 INSERT INTO Roles (Name) VALUES 
     (N'Администратор'),
     (N'Менеджер'),
     (N'Авторизованный клиент');
 GO
 
--- =============================================
--- Вставка статусов заказов
--- =============================================
 INSERT INTO OrderStatuses (Name) VALUES 
     (N'Новый'),
     (N'В обработке'),
     (N'Завершен');
 GO
 
--- =============================================
--- Вставка производителей
--- =============================================
 INSERT INTO Manufacturers (Name) VALUES 
     (N'Яуза'),
     (N'Т8 Издательские технологии'),
@@ -164,9 +122,6 @@ INSERT INTO Manufacturers (Name) VALUES
     (N'ВКН');
 GO
 
--- =============================================
--- Вставка категорий
--- =============================================
 INSERT INTO Categories (Name) VALUES 
     (N'Художественная литература'),
     (N'Учебник для вузов'),
@@ -174,9 +129,6 @@ INSERT INTO Categories (Name) VALUES
     (N'Учебное пособие');
 GO
 
--- =============================================
--- Вставка товаров
--- =============================================
 INSERT INTO Products (Article, Name, Unit, Price, Author, ManufacturerId, CategoryId, Discount, StockQuantity, Description, Photo) VALUES 
     (N'А112Т4', N'Прокляты и убиты', N'шт.', 585, N'Виктор Астафьев', 
      (SELECT Id FROM Manufacturers WHERE Name = N'Яуза'),
@@ -315,9 +267,6 @@ INSERT INTO Products (Article, Name, Unit, Price, Author, ManufacturerId, Catego
      N'20.jpg');
 GO
 
--- =============================================
--- Вставка пользователей
--- =============================================
 DECLARE @AdminRoleId INT = (SELECT Id FROM Roles WHERE Name = N'Администратор');
 DECLARE @ManagerRoleId INT = (SELECT Id FROM Roles WHERE Name = N'Менеджер');
 DECLARE @ClientRoleId INT = (SELECT Id FROM Roles WHERE Name = N'Авторизованный клиент');
@@ -335,9 +284,6 @@ INSERT INTO Users (RoleId, FullName, Login, Password) VALUES
     (@ClientRoleId, N'Степанов Михаил Артёмович', N'wpmrc3do@tutanota.com', N'RSbvHv');
 GO
 
--- =============================================
--- Вставка заказов
--- =============================================
 DECLARE @StatusNew INT = (SELECT Id FROM OrderStatuses WHERE Name = N'Новый');
 DECLARE @StatusProcessing INT = (SELECT Id FROM OrderStatuses WHERE Name = N'В обработке');
 DECLARE @StatusCompleted INT = (SELECT Id FROM OrderStatuses WHERE Name = N'Завершен');
@@ -367,7 +313,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №2
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 2,
     (SELECT Id FROM Users WHERE FullName = N'Никифорова Весения Николаевна'),
@@ -413,7 +358,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №4
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 4,
     NULL,
@@ -438,7 +382,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №5
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 5,
     NULL,
@@ -459,7 +402,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №6
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 6,
     (SELECT Id FROM Users WHERE FullName = N'Никифорова Весения Николаевна'),
@@ -484,7 +426,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №7
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 7,
     NULL,
@@ -509,7 +450,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №8
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 8,
     (SELECT Id FROM Users WHERE FullName = N'Одинцов Серафим Артёмович'),
@@ -538,7 +478,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №9
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 9,
     NULL,
@@ -563,7 +502,6 @@ UPDATE Orders SET TotalAmount = (
     FROM OrderItems WHERE OrderId = @OrderId
 ) WHERE Id = @OrderId;
 
--- Заказ №10
 INSERT INTO Orders (OrderNumber, UserId, OrderDate, DeliveryDate, StatusId, PickupCode, TotalAmount)
 SELECT 10,
     (SELECT Id FROM Users WHERE FullName = N'Степанов Михаил Артёмович'),

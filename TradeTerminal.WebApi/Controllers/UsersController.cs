@@ -13,6 +13,8 @@ public class UsersController(UserService service) : ControllerBase
 {
     private readonly UserService _service = service;
 
+    
+    
     /// <summary>
     /// Получить всех пользователей
     /// </summary>
