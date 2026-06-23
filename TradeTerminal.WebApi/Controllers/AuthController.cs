@@ -35,7 +35,7 @@ public class AuthController(UserService service) : ControllerBase
             user.FullName,
             user.Login,
             user.RoleId,
-            RoleName = user.RoleName,  // ← Исправлено: используем RoleName, а не Role
+            RoleName = user.RoleName,
             message = "Вход выполнен успешно"
         });
     }
